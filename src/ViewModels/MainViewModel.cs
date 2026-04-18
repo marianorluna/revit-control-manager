@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -14,6 +16,7 @@ using Autodesk.Revit.UI;
 using ControlManager.Models;
 using ControlManager.Services;
 using ControlManager.Utils;
+using Microsoft.Win32;
 
 namespace ControlManager.ViewModels
 {
@@ -42,17 +45,23 @@ namespace ControlManager.ViewModels
 
             AllIssues.CollectionChanged += OnIssuesCollectionChanged;
             FilteredIssues.CollectionChanged += OnIssuesCollectionChanged;
+            FilteredIssues.CollectionChanged += OnFilteredIssuesCollectionChangedForHeader;
 
             ModelName = document.Title ?? string.Empty;
 
             RunChecksCommand = new RelayCommand(ExecuteRunChecks, () => !IsRunning);
-            ExportCommand = new RelayCommand(ExecuteExportPlaceholder);
-            SelectInRevitCommand = new RelayCommand(ExecuteSelectInRevitPlaceholder);
+            ExportCommand = new RelayCommand(ExecuteExport);
+            SelectInRevitCommand = new RelayCommand(ExecuteSelectInRevit);
             SelectAllCommand = new RelayCommand(ExecuteSelectAll, () => FilteredIssues.Count > 0);
             DeselectAllCommand = new RelayCommand(ExecuteDeselectAll, () => FilteredIssues.Count > 0);
 
             ApplyFilter();
         }
+
+        /// <summary>
+        /// Solicita cerrar la ventana WPF (p. ej. tras seleccionar en Revit).
+        /// </summary>
+        public event EventHandler? RequestCloseWindow;
 
         public ObservableCollection<ElementIssue> AllIssues { get; }
 
@@ -171,12 +180,96 @@ namespace ControlManager.ViewModels
 
         public RelayCommand DeselectAllCommand { get; }
 
+        /// <summary>
+        /// Estado del check del encabezado: todos los visibles, ninguno o mezcla (indeterminado).
+        /// </summary>
+        public bool? HeaderSelectAllCheckState
+        {
+            get
+            {
+                if (FilteredIssues.Count == 0)
+                {
+                    return false;
+                }
+
+                int selected = FilteredIssues.Count(i => i.IsSelected);
+                if (selected == 0)
+                {
+                    return false;
+                }
+
+                if (selected == FilteredIssues.Count)
+                {
+                    return true;
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Invierte entre seleccionar todos los visibles y deseleccionar todos (cabecera del grid).
+        /// </summary>
+        public void ToggleSelectAllFiltered()
+        {
+            if (FilteredIssues.Count == 0)
+            {
+                return;
+            }
+
+            bool selectAll = HeaderSelectAllCheckState != true;
+            foreach (ElementIssue issue in FilteredIssues)
+            {
+                issue.IsSelected = selectAll;
+            }
+
+            OnPropertyChanged(nameof(HeaderSelectAllCheckState));
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private void OnIssuesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             RaiseIssueRelatedProperties();
             CommandManager.InvalidateRequerySuggested();
+        }
+
+        private void OnFilteredIssuesCollectionChangedForHeader(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (ElementIssue issue in e.OldItems)
+                {
+                    issue.PropertyChanged -= FilteredIssuePropertyChanged;
+                }
+            }
+
+            if (e.NewItems != null)
+            {
+                foreach (ElementIssue issue in e.NewItems)
+                {
+                    issue.PropertyChanged += FilteredIssuePropertyChanged;
+                }
+            }
+
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                foreach (ElementIssue issue in FilteredIssues)
+                {
+                    issue.PropertyChanged -= FilteredIssuePropertyChanged;
+                    issue.PropertyChanged += FilteredIssuePropertyChanged;
+                }
+            }
+
+            OnPropertyChanged(nameof(HeaderSelectAllCheckState));
+        }
+
+        private void FilteredIssuePropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElementIssue.IsSelected))
+            {
+                OnPropertyChanged(nameof(HeaderSelectAllCheckState));
+            }
         }
 
         private void RaiseIssueRelatedProperties()
@@ -236,22 +329,100 @@ namespace ControlManager.ViewModels
             }
         }
 
-        private void ExecuteExportPlaceholder()
+        private void ExecuteExport()
         {
-            MessageBox.Show(
-                "La exportación a Excel estará disponible en la Fase 4.",
-                "Control Manager",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            if (FilteredIssues.Count == 0)
+            {
+                TaskDialog.Show(
+                    "Control Manager",
+                    "No hay datos para exportar.");
+                return;
+            }
+
+            string defaultName = ExportService.BuildDefaultFileName(ModelName, DateTime.Now);
+            var dialog = new SaveFileDialog
+            {
+                Filter = "Excel (*.xlsx)|*.xlsx",
+                FileName = defaultName,
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                DefaultExt = ".xlsx",
+                AddExtension = true
+            };
+
+            if (dialog.ShowDialog() != true || string.IsNullOrWhiteSpace(dialog.FileName))
+            {
+                return;
+            }
+
+            try
+            {
+                string path = Path.GetFullPath(dialog.FileName);
+                ExportService.ExportToExcel(FilteredIssues.ToList(), path, ModelName);
+                ShowExportSuccessTaskDialog(path);
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show(
+                    "Control Manager",
+                    "No se pudo exportar el archivo Excel:\n" + ex.Message);
+            }
         }
 
-        private void ExecuteSelectInRevitPlaceholder()
+        private static void ShowExportSuccessTaskDialog(string path)
         {
-            MessageBox.Show(
-                "Seleccionar elementos en Revit estará disponible en la Fase 4.",
-                "Control Manager",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            var td = new TaskDialog("Control Manager")
+            {
+                MainInstruction = "Exportación completada",
+                MainContent = "El archivo se guardó correctamente.",
+                ExpandedContent = path
+            };
+            td.AddCommandLink(
+                TaskDialogCommandLinkId.CommandLink1,
+                "Abrir archivo",
+                "Abrir con la aplicación predeterminada.");
+            td.CommonButtons = TaskDialogCommonButtons.Close;
+            td.DefaultButton = TaskDialogResult.Close;
+
+            TaskDialogResult result = td.Show();
+            if (result == TaskDialogResult.CommandLink1)
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+                }
+                catch (Exception ex)
+                {
+                    TaskDialog.Show(
+                        "Control Manager",
+                        "No se pudo abrir el archivo:\n" + ex.Message);
+                }
+            }
+        }
+
+        private void ExecuteSelectInRevit()
+        {
+            if (!FilteredIssues.Any(i => i.IsSelected))
+            {
+                StatusMessage = "⚠️ Marca al menos un elemento para seleccionar";
+                return;
+            }
+
+            try
+            {
+                QCService.SelectElementsInRevit(_uidocument, FilteredIssues.ToList());
+                StatusMessage = "Elementos seleccionados en Revit.";
+                RequestCloseWindow?.Invoke(this, EventArgs.Empty);
+            }
+            catch (InvalidOperationException ex)
+            {
+                StatusMessage = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show(
+                    "Control Manager",
+                    "No se pudieron seleccionar los elementos en Revit:\n" + ex.Message);
+            }
         }
 
         private void ExecuteSelectAll()
@@ -260,6 +431,8 @@ namespace ControlManager.ViewModels
             {
                 issue.IsSelected = true;
             }
+
+            OnPropertyChanged(nameof(HeaderSelectAllCheckState));
         }
 
         private void ExecuteDeselectAll()
@@ -268,6 +441,8 @@ namespace ControlManager.ViewModels
             {
                 issue.IsSelected = false;
             }
+
+            OnPropertyChanged(nameof(HeaderSelectAllCheckState));
         }
 
         private void ApplyFilter()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.UI;
 using ControlManager.Models;
 using ControlManager.Utils;
 
@@ -265,6 +266,33 @@ namespace ControlManager.Services
                 .ThenBy(i => i.Category)
                 .ThenBy(i => i.RevitElementId)
                 .ToList();
+        }
+
+        /// <summary>
+        /// Selecciona en Revit los elementos de las incidencias marcadas (<see cref="ElementIssue.IsSelected"/>).
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Si ninguna incidencia está marcada.</exception>
+        public static void SelectElementsInRevit(UIDocument uidoc, List<ElementIssue> issues)
+        {
+            if (uidoc == null)
+            {
+                throw new ArgumentNullException(nameof(uidoc));
+            }
+
+            if (issues == null)
+            {
+                throw new ArgumentNullException(nameof(issues));
+            }
+
+            List<ElementIssue> selected = issues.Where(i => i.IsSelected).ToList();
+            if (selected.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    "Debe marcar al menos un elemento en la lista para seleccionarlo en Revit.");
+            }
+
+            ICollection<ElementId> ids = selected.Select(i => i.ElementId).ToList();
+            uidoc.Selection.SetElementIds(ids);
         }
 
         private static bool ShouldHaveLevel(Element e)

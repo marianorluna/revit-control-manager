@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using ControlManager.ViewModels;
@@ -14,7 +15,9 @@ namespace ControlManager.UI
         public MainWindow(Document document, UIDocument uidocument)
         {
             InitializeComponent();
-            DataContext = new MainViewModel(document, uidocument);
+            var viewModel = new MainViewModel(document, uidocument);
+            viewModel.RequestCloseWindow += (_, _) => Close();
+            DataContext = viewModel;
             Closing += MainWindow_Closing;
         }
 
@@ -23,20 +26,14 @@ namespace ControlManager.UI
             // No cancelar el cierre; no se requiere lógica adicional para la sesión de Revit.
         }
 
-        private void SelectAllCheckBox_Checked(object sender, RoutedEventArgs e)
+        private void HeaderSelectAllCheckBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (DataContext is MainViewModel vm)
             {
-                vm.SelectAllCommand.Execute(null);
+                vm.ToggleSelectAllFiltered();
             }
-        }
 
-        private void SelectAllCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is MainViewModel vm)
-            {
-                vm.DeselectAllCommand.Execute(null);
-            }
+            e.Handled = true;
         }
     }
 }

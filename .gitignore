@@ -25,7 +25,8 @@ bld/
 .idea/
 *.DotSettings.user
 
-# NuGet (por si más adelante se usa packages.config o carpetas locales)
+# NuGet (para packages.config o carpetas locales de NuGet)
+nuget.exe
 **/packages/*
 !**/packages/build/
 *.nupkg

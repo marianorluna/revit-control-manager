@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Control Manager: plan de compilación MSBuild. "Boilerplate" = lo típico de un Class Library .NET Framework + Revit; "Extra" = añadido para este proyecto o para evitar fallos. -->
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- Boilerplate: metadatos base del ensamblado y framework. -->
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
@@ -12,16 +10,13 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <!-- Extra: C# moderno y nullability (no es obligatorio para Revit, pero ayuda a calidad de código). -->
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-    <!-- Extra: símbolo REVIT2023 para #if en código multi-versión más adelante. TRACE es estándar. -->
     <DefineConstants>TRACE;REVIT2023</DefineConstants>
-    <!-- WPF: permite compilar ventanas y ResourceDictionary (.xaml). -->
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <IncludePackageReferencesDuringMarkupCompilation>false</IncludePackageReferencesDuringMarkupCompilation>
   </PropertyGroup>
 
-  <!-- Boilerplate: opciones típicas de compilación Debug (símbolos, sin optimizar, salida bin\x64\Debug). -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -31,11 +26,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <!-- Extra: PostBuildEvent vacío a propósito; el despliegue a Addins lo hace el Target CopyAddinForDebug (evita errores de xcopy/cmd). -->
     <PostBuildEvent />
   </PropertyGroup>
 
-  <!-- Boilerplate: Release optimizado para entrega. -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -46,7 +39,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
 
-  <!-- Boilerplate: referencias a la API de Revit (CopyLocal/Private=false como pide Autodesk) + WPF para UI futura. -->
   <ItemGroup>
     <Reference Include="RevitAPI">
       <HintPath>C:\Program Files\Autodesk\Revit 2023\RevitAPI.dll</HintPath>
@@ -64,15 +56,27 @@
     <Reference Include="WindowsBase" />
     <Reference Include="System.Xaml" />
     <Reference Include="mscorlib" />
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>packages\DocumentFormat.OpenXml.3.1.1\lib\netstandard2.0\DocumentFormat.OpenXml.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml.Framework">
+      <HintPath>packages\DocumentFormat.OpenXml.Framework.3.1.1\lib\netstandard2.0\DocumentFormat.OpenXml.Framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Packaging">
+      <HintPath>packages\System.IO.Packaging.8.0.0\lib\net462\System.IO.Packaging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
 
-  <!-- Boilerplate: lista de archivos .cs que entran en la DLL. -->
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Commands\MainCommand.cs" />
     <Compile Include="Models\ElementIssue.cs" />
     <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\SeverityFilterOption.cs" />
+    <Compile Include="Services\ExportService.cs" />
     <Compile Include="Services\QCService.cs" />
     <Compile Include="Utils\BoolToVisibilityConverter.cs" />
     <Compile Include="Utils\RelayCommand.cs" />
@@ -95,26 +99,26 @@
     </Page>
   </ItemGroup>
 
-  <!-- Boilerplate: manifiesto .addin en el repo; no se copia al bin salvo que lo pidas (Revit lo lee desde Addins o ruta del instalador). -->
   <ItemGroup>
     <None Include="ControlManager.addin">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 
-  <!-- Extra: ruta fija de Addins de usuario/máquina para Revit 2023 (solo usada por el target de abajo). -->
   <PropertyGroup>
     <RevitAddins2023Path>C:\ProgramData\Autodesk\Revit\Addins\2023\</RevitAddins2023Path>
   </PropertyGroup>
 
-  <!-- Extra: tras cada Build en Debug|x64, copia .addin y .dll a Addins para probar en Revit sin copiar a mano. Usa tareas MSBuild (Copy/MakeDir), no xcopy. Solo Debug. -->
   <Target Name="CopyAddinForDebug" AfterTargets="Build" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <MakeDir Directories="$(RevitAddins2023Path)" />
-    <!-- Exec+copy: evita reintentos ruidosos de la tarea Copy si Revit bloquea la DLL; cierra Revit para desplegar. -->
+    <ItemGroup>
+      <_AddinDlls Include="$(TargetDir)*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_AddinDlls)" DestinationFolder="$(RevitAddins2023Path)" SkipUnchangedFiles="true" ContinueOnError="true" />
     <Exec Command="cmd /c copy /Y &quot;$(MSBuildProjectDirectory)\ControlManager.addin&quot; &quot;$(RevitAddins2023Path)ControlManager.addin&quot;" IgnoreExitCode="true" />
-    <Exec Command="cmd /c copy /Y &quot;$(TargetPath)&quot; &quot;$(RevitAddins2023Path)ControlManager.dll&quot;" IgnoreExitCode="true" />
   </Target>
 
-  <!-- Boilerplate: importa las reglas estándar de compilación C# (.NET Framework); WinFX ya lo enlaza Microsoft.NETFramework.CurrentVersion.targets. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildSDKsPath)\Microsoft.NET.Sdk.WindowsDesktop\targets\Microsoft.WinFX.targets" Condition="Exists('$(MSBuildSDKsPath)\Microsoft.NET.Sdk.WindowsDesktop\targets\Microsoft.WinFX.targets')" />
 </Project>

@@ -190,7 +190,16 @@
                       Style="{StaticResource DataGridStyle}"
                       RowStyle="{StaticResource IssueDataGridRowStyle}">
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Width="44" Header="">
+                    <DataGridTemplateColumn Width="44">
+                        <DataGridTemplateColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <CheckBox HorizontalAlignment="Center"
+                                          IsThreeState="True"
+                                          IsChecked="{Binding DataContext.HeaderSelectAllCheckState, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}"
+                                          PreviewMouseLeftButtonDown="HeaderSelectAllCheckBox_PreviewMouseLeftButtonDown"
+                                          ToolTip="Seleccionar o deseleccionar todas las filas visibles" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.HeaderTemplate>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <CheckBox HorizontalAlignment="Center"
@@ -250,12 +259,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal">
-                <CheckBox VerticalAlignment="Center"
-                          Content="Seleccionar todos"
-                          Checked="SelectAllCheckBox_Checked"
-                          Unchecked="SelectAllCheckBox_Unchecked" />
-                <Button Margin="12,0,0,0"
-                        VerticalAlignment="Center"
+                <Button VerticalAlignment="Center"
                         Command="{Binding SelectInRevitCommand}"
                         Content="Seleccionar en Revit"
                         Padding="10,4" />
