@@ -26,7 +26,7 @@ namespace ControlManager
                     "ControlManager.Commands.MainCommand")
                 {
                     ToolTip = "Ejecuta verificaciones de Quality Control sobre el modelo activo",
-                    LongDescription = "Detecta elementos con parámetros vacíos, cuartos sin encerrar y nombres faltantes. Compatible con Revit 2023-2026."
+                    LongDescription = "Detecta elementos con parámetros vacíos, cuartos sin encerrar y nombres faltantes. Compatible con Revit 2023-2027."
                 };
 
                 RibbonItem ribbonItem = panel.AddItem(buttonData);

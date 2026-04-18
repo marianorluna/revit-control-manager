@@ -291,7 +291,9 @@ namespace ControlManager.Services
                     "Debe marcar al menos un elemento en la lista para seleccionarlo en Revit.");
             }
 
-            ICollection<ElementId> ids = selected.Select(i => i.ElementId).ToList();
+            ICollection<ElementId> ids = selected
+                .Select(i => RevitHelper.ElementIdFromInteger(i.RevitElementId))
+                .ToList();
             uidoc.Selection.SetElementIds(ids);
         }
 
@@ -339,7 +341,6 @@ namespace ControlManager.Services
             return new ElementIssue
             {
                 RevitElementId = e.Id.IntegerValue,
-                ElementId = e.Id,
                 ElementName = RevitHelper.GetElementName(e),
                 Category = RevitHelper.GetCategoryName(e),
                 TypeName = GetTypeName(doc, e),

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>ControlManager</Name>
+    <Assembly>.\ControlManager.dll</Assembly>
+    <AddInId>7B9DFD66-0F13-4B2A-A8A8-96A2F825E2E5</AddInId>
+    <FullClassName>ControlManager.App</FullClassName>
+    <VendorId>com.controlmanager</VendorId>
+    <VendorDescription>Control Manager BIM Tool | QC para Coordinadores BIM</VendorDescription>
+  </AddIn>
+</RevitAddIns>

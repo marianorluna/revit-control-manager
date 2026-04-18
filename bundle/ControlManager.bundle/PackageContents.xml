@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ApplicationPackage
+  SchemaVersion="1.0"
+  AutodeskProduct="Revit"
+  Name="Control Manager"
+  Description="Quality Control para Coordinadores BIM"
+  AppVersion="1.0.0"
+  FriendlyVersion="1.0.0"
+  ProductType="Application"
+  SupportedLocales="Enu|Esp"
+  AppNameSpace="appstore.exchange.autodesk.com"
+  Author="Control Manager"
+  ProductCode="{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+  UpgradeCode="{B2C3D4E5-F6A7-8901-BCDE-F12345678901}">
+  <Components Description="Revit 2023">
+    <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R23" SeriesMax="R23" />
+    <ComponentEntry AppName="ControlManager" Version="1.0.0" ModuleName="./Contents/2023/ControlManager.addin" />
+  </Components>
+  <Components Description="Revit 2024">
+    <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R24" SeriesMax="R24" />
+    <ComponentEntry AppName="ControlManager" Version="1.0.0" ModuleName="./Contents/2024/ControlManager.addin" />
+  </Components>
+  <Components Description="Revit 2025">
+    <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R25" SeriesMax="R25" />
+    <ComponentEntry AppName="ControlManager" Version="1.0.0" ModuleName="./Contents/2025/ControlManager.addin" />
+  </Components>
+  <Components Description="Revit 2026">
+    <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R26" SeriesMax="R26" />
+    <ComponentEntry AppName="ControlManager" Version="1.0.0" ModuleName="./Contents/2026/ControlManager.addin" />
+  </Components>
+  <Components Description="Revit 2027">
+    <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R27" SeriesMax="R27" />
+    <ComponentEntry AppName="ControlManager" Version="1.0.0" ModuleName="./Contents/2027/ControlManager.addin" />
+  </Components>
+</ApplicationPackage>

@@ -1,0 +1,88 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWpf>true</UseWpf>
+    <OutputType>Library</OutputType>
+    <Platforms>x64</Platforms>
+    <Configurations>Debug2027;Release2027</Configurations>
+    <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>ControlManager</AssemblyName>
+    <RootNamespace>ControlManager</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>$(NoWarn);WFO1000</NoWarn>
+    <ProjectGuid>{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}</ProjectGuid>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug2027|x64'">
+    <DefineConstants>DEBUG;TRACE;REVIT2027</DefineConstants>
+    <OutputPath>bin\x64\Debug2027\</OutputPath>
+    <RevitAddinsPath>C:\ProgramData\Autodesk\Revit\Addins\2027\</RevitAddinsPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release2027|x64'">
+    <DefineConstants>TRACE;REVIT2027</DefineConstants>
+    <OutputPath>bin\Release2027\</OutputPath>
+    <RevitAddinsPath>C:\ProgramData\Autodesk\Revit\Addins\2027\</RevitAddinsPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="RevitAPI">
+      <HintPath>C:\Program Files\Autodesk\Revit 2027\RevitAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>C:\Program Files\Autodesk\Revit 2027\RevitAPIUI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.1.1" />
+    <PackageReference Include="DocumentFormat.OpenXml.Framework" Version="3.1.1" />
+  </ItemGroup>
+
+  <!-- Código compartido con Legacy (misma ruta física; un solo archivo fuente) -->
+  <ItemGroup>
+    <Compile Include="..\ControlManager.Shared\Models\ElementIssue.cs" Link="Models\ElementIssue.cs" />
+    <Compile Include="..\ControlManager.Shared\Models\Enums.cs" Link="Models\Enums.cs" />
+    <Compile Include="..\ControlManager.Shared\Models\SeverityFilterOption.cs" Link="Models\SeverityFilterOption.cs" />
+    <Compile Include="..\ControlManager.Legacy\App.cs" Link="App.cs" />
+    <Compile Include="..\ControlManager.Legacy\Commands\MainCommand.cs" Link="Commands\MainCommand.cs" />
+    <Compile Include="..\ControlManager.Legacy\Services\ExportService.cs" Link="Services\ExportService.cs" />
+    <Compile Include="..\ControlManager.Legacy\Services\QCService.cs" Link="Services\QCService.cs" />
+    <Compile Include="..\ControlManager.Legacy\Utils\BoolToVisibilityConverter.cs" Link="Utils\BoolToVisibilityConverter.cs" />
+    <Compile Include="..\ControlManager.Legacy\Utils\RelayCommand.cs" Link="Utils\RelayCommand.cs" />
+    <Compile Include="..\ControlManager.Legacy\Utils\IconGenerator.cs" Link="Utils\IconGenerator.cs" />
+    <Compile Include="..\ControlManager.Legacy\Utils\RevitHelper.cs" Link="Utils\RevitHelper.cs" />
+    <Compile Include="..\ControlManager.Legacy\Utils\SeverityToColorConverter.cs" Link="Utils\SeverityToColorConverter.cs" />
+    <Compile Include="..\ControlManager.Legacy\ViewModels\MainViewModel.cs" Link="ViewModels\MainViewModel.cs" />
+    <Compile Include="..\ControlManager.Legacy\UI\MainWindow.xaml.cs" Link="UI\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="..\ControlManager.Legacy\Resources\Styles\AppStyles.xaml" Link="Resources\Styles\AppStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="..\ControlManager.Legacy\UI\MainWindow.xaml" Link="UI\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\ControlManager.Legacy\ControlManager.addin" Link="ControlManager.addin" />
+  </ItemGroup>
+
+  <Target Name="DeployAddinToRevitAddinsFolder" AfterTargets="Build" Condition="'$(RevitAddinsPath)' != '' AND '$(DeployRevitAddinToFolder)' != 'false'">
+    <MakeDir Directories="$(RevitAddinsPath)" />
+    <Exec Command="cmd /c copy /Y &quot;$(TargetDir)*.dll&quot; &quot;$(RevitAddinsPath)&quot;" IgnoreExitCode="true" />
+    <Exec Command="cmd /c copy /Y &quot;$(MSBuildProjectDirectory)\..\ControlManager.Legacy\ControlManager.addin&quot; &quot;$(RevitAddinsPath)ControlManager.addin&quot;" IgnoreExitCode="true" Condition="Exists('$(MSBuildProjectDirectory)\..\ControlManager.Legacy\ControlManager.addin')" />
+    <Message Importance="high" Text="Control Manager: copia a $(RevitAddinsPath) intentada ($(Configuration)). Si Revit estaba abierto, ciérralo y vuelve a compilar." />
+  </Target>
+</Project>

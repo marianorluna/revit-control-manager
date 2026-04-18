@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlManager.Legacy", "src\ControlManager.Legacy\ControlManager.Legacy.csproj", "{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlManager.Net10", "src\ControlManager.Net10\ControlManager.Net10.csproj", "{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug2023|x64 = Debug2023|x64
+		Release2023|x64 = Release2023|x64
+		Debug2024|x64 = Debug2024|x64
+		Release2024|x64 = Release2024|x64
+		Debug2025|x64 = Debug2025|x64
+		Release2025|x64 = Release2025|x64
+		Debug2026|x64 = Debug2026|x64
+		Release2026|x64 = Release2026|x64
+		Debug2027|x64 = Debug2027|x64
+		Release2027|x64 = Release2027|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Debug2023|x64.ActiveCfg = Debug2023|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Debug2023|x64.Build.0 = Debug2023|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Release2023|x64.ActiveCfg = Release2023|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Release2023|x64.Build.0 = Release2023|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Debug2024|x64.ActiveCfg = Debug2024|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Debug2024|x64.Build.0 = Debug2024|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Release2024|x64.ActiveCfg = Release2024|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Release2024|x64.Build.0 = Release2024|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Debug2025|x64.ActiveCfg = Debug2025|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Debug2025|x64.Build.0 = Debug2025|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Release2025|x64.ActiveCfg = Release2025|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Release2025|x64.Build.0 = Release2025|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Debug2026|x64.ActiveCfg = Debug2026|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Debug2026|x64.Build.0 = Debug2026|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Release2026|x64.ActiveCfg = Release2026|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Release2026|x64.Build.0 = Release2026|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Debug2027|x64.ActiveCfg = Debug2023|x64
+		{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}.Release2027|x64.ActiveCfg = Release2023|x64
+		{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}.Debug2023|x64.ActiveCfg = Debug2027|x64
+		{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}.Release2023|x64.ActiveCfg = Release2027|x64
+		{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}.Debug2024|x64.ActiveCfg = Debug2027|x64
+		{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}.Release2024|x64.ActiveCfg = Release2027|x64
+		{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}.Debug2025|x64.ActiveCfg = Debug2027|x64
+		{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}.Release2025|x64.ActiveCfg = Release2027|x64
+		{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}.Debug2026|x64.ActiveCfg = Debug2027|x64
+		{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}.Release2026|x64.ActiveCfg = Release2027|x64
+		{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}.Debug2027|x64.ActiveCfg = Debug2027|x64
+		{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}.Debug2027|x64.Build.0 = Debug2027|x64
+		{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}.Release2027|x64.ActiveCfg = Release2027|x64
+		{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}.Release2027|x64.Build.0 = Release2027|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -7,6 +7,17 @@ namespace ControlManager.Utils
     /// </summary>
     public static class RevitHelper
     {
+        /// <summary>
+        /// Construye un <see cref="ElementId"/> desde el valor entero del modelo compartido.
+        /// </summary>
+        /// <remarks>
+        /// Si en una versión futura de la API solo existiera <c>ElementId(long)</c>, añadir aquí rama <c>#if REVIT2027</c>.
+        /// </remarks>
+        public static ElementId ElementIdFromInteger(int id)
+        {
+            return new ElementId(id);
+        }
+
         public static string GetElementName(Element e)
         {
             try

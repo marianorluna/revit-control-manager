@@ -1,17 +1,15 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Autodesk.Revit.DB;
 
 namespace ControlManager.Models
 {
     /// <summary>
     /// Representa un problema de QC sobre un elemento del modelo.
+    /// Los identificadores de elemento Revit se almacenan como entero (IntegerValue) para uso en netstandard sin referencia a RevitAPI.
     /// </summary>
     public sealed class ElementIssue : INotifyPropertyChanged
     {
         public int RevitElementId { get; set; }
-
-        public ElementId ElementId { get; set; } = ElementId.InvalidElementId;
 
         public string ElementName { get; set; } = string.Empty;
 
