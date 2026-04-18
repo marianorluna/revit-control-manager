@@ -17,6 +17,8 @@
     <Nullable>enable</Nullable>
     <!-- Extra: símbolo REVIT2023 para #if en código multi-versión más adelante. TRACE es estándar. -->
     <DefineConstants>TRACE;REVIT2023</DefineConstants>
+    <!-- WPF: permite compilar ventanas y ResourceDictionary (.xaml). -->
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
 
   <!-- Boilerplate: opciones típicas de compilación Debug (símbolos, sin optimizar, salida bin\x64\Debug). -->
@@ -60,6 +62,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="System.Xaml" />
     <Reference Include="mscorlib" />
   </ItemGroup>
 
@@ -67,6 +70,29 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Commands\MainCommand.cs" />
+    <Compile Include="Models\ElementIssue.cs" />
+    <Compile Include="Models\Enums.cs" />
+    <Compile Include="Models\SeverityFilterOption.cs" />
+    <Compile Include="Services\QCService.cs" />
+    <Compile Include="Utils\BoolToVisibilityConverter.cs" />
+    <Compile Include="Utils\RelayCommand.cs" />
+    <Compile Include="Utils\RevitHelper.cs" />
+    <Compile Include="Utils\SeverityToColorConverter.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="UI\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="Resources\Styles\AppStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <!-- Boilerplate: manifiesto .addin en el repo; no se copia al bin salvo que lo pidas (Revit lo lee desde Addins o ruta del instalador). -->
@@ -84,10 +110,11 @@
   <!-- Extra: tras cada Build en Debug|x64, copia .addin y .dll a Addins para probar en Revit sin copiar a mano. Usa tareas MSBuild (Copy/MakeDir), no xcopy. Solo Debug. -->
   <Target Name="CopyAddinForDebug" AfterTargets="Build" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <MakeDir Directories="$(RevitAddins2023Path)" />
-    <Copy SourceFiles="$(MSBuildProjectDirectory)\ControlManager.addin" DestinationFolder="$(RevitAddins2023Path)" />
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(RevitAddins2023Path)" />
+    <!-- Exec+copy: evita reintentos ruidosos de la tarea Copy si Revit bloquea la DLL; cierra Revit para desplegar. -->
+    <Exec Command="cmd /c copy /Y &quot;$(MSBuildProjectDirectory)\ControlManager.addin&quot; &quot;$(RevitAddins2023Path)ControlManager.addin&quot;" IgnoreExitCode="true" />
+    <Exec Command="cmd /c copy /Y &quot;$(TargetPath)&quot; &quot;$(RevitAddins2023Path)ControlManager.dll&quot;" IgnoreExitCode="true" />
   </Target>
 
-  <!-- Boilerplate: importa las reglas estándar de compilación C# (.NET Framework). -->
+  <!-- Boilerplate: importa las reglas estándar de compilación C# (.NET Framework); WinFX ya lo enlaza Microsoft.NETFramework.CurrentVersion.targets. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

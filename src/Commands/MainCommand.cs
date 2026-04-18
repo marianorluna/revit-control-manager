@@ -2,6 +2,8 @@ using System;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using ControlManager.UI;
+using ControlManager.Utils;
 
 namespace ControlManager.Commands
 {
@@ -15,8 +17,27 @@ namespace ControlManager.Commands
         {
             try
             {
-                string version = commandData.Application.Application.VersionNumber;
-                TaskDialog.Show("Control Manager v1.0", "Plugin iniciado correctamente. Revit " + version);
+                UIDocument? uiDoc = commandData.Application.ActiveUIDocument;
+                Document? doc = uiDoc?.Document;
+
+                if (doc == null)
+                {
+                    TaskDialog.Show(
+                        "Control Manager",
+                        "No hay un documento activo. Abre un proyecto de Revit e inténtalo de nuevo.");
+                    return Result.Cancelled;
+                }
+
+                if (!RevitHelper.IsProjectDocument(doc))
+                {
+                    TaskDialog.Show(
+                        "Control Manager",
+                        "Este comando solo está disponible en un proyecto de Revit. Cierra el editor de familias y abre un proyecto.");
+                    return Result.Cancelled;
+                }
+
+                var window = new MainWindow(doc, uiDoc!);
+                window.ShowDialog();
                 return Result.Succeeded;
             }
             catch (Exception ex)

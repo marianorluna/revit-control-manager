@@ -1,0 +1,282 @@
+<Window x:Class="ControlManager.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:ControlManager.Models"
+        mc:Ignorable="d"
+        Title="Control Manager"
+        MinWidth="820"
+        MinHeight="560"
+        Width="900"
+        Height="620"
+        FontFamily="Segoe UI"
+        FontSize="12"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/ControlManager;component/Resources/Styles/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <!-- Indicadores de severidad (WPF no colorea bien los emoji en ComboBox / texto). -->
+            <SolidColorBrush x:Key="SeverityIndicatorHighBrush" Color="#D32F2F" />
+            <SolidColorBrush x:Key="SeverityIndicatorMediumBrush" Color="#F57C00" />
+            <SolidColorBrush x:Key="SeverityIndicatorLowBrush" Color="#388E3C" />
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Cabecera -->
+        <Border Grid.Row="0"
+                Background="{StaticResource HeaderBackgroundBrush}"
+                CornerRadius="4"
+                Padding="12,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Foreground="{StaticResource HeaderForegroundBrush}"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Text="🔧 CONTROL MANAGER  v1.0" />
+                    <TextBlock Margin="0,4,0,0"
+                               Foreground="#E0E0E0"
+                               Text="Quality Control para Coordinadores BIM" />
+                </StackPanel>
+                <TextBlock Grid.Column="1"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource HeaderForegroundBrush}">
+                    <Run Text="Modelo: " />
+                    <Run Text="{Binding ModelName, Mode=OneWay}" />
+                </TextBlock>
+            </Grid>
+        </Border>
+
+        <!-- Barra de acciones -->
+        <StackPanel Grid.Row="1" Margin="0,10,0,0" Orientation="Horizontal">
+            <Button Command="{Binding RunChecksCommand}"
+                    Content="{Binding RunChecksButtonText}"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    MinWidth="140" />
+            <Button Margin="8,0,0,0"
+                    Command="{Binding ExportCommand}"
+                    Content="📊 Exportar Excel"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    MinWidth="150" />
+            <Button Margin="8,0,0,0"
+                    Content="✖ Cerrar"
+                    MinWidth="100"
+                    Padding="12,6"
+                    IsCancel="True" />
+        </StackPanel>
+
+        <!-- Progreso -->
+        <ProgressBar Grid.Row="2"
+                     Height="6"
+                     Margin="0,8,0,0"
+                     IsIndeterminate="True"
+                     Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+        <!-- Filtro y estadísticas -->
+        <Grid Grid.Row="3" Margin="0,10,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <!-- Auto: el margen izquierdo del ComboBox + MinWidth deben caber (fijo 200px recortaba la flecha). -->
+                <ColumnDefinition Width="Auto" MinWidth="216" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock VerticalAlignment="Center" Text="Filtrar:" />
+            <ComboBox Grid.Column="1"
+                      Margin="8,0,0,0"
+                      MinWidth="200"
+                      HorizontalAlignment="Left"
+                      MinHeight="32"
+                      VerticalContentAlignment="Center"
+                      ItemsSource="{Binding SeverityFilterOptions}"
+                      SelectedValuePath="Key"
+                      SelectedValue="{Binding SelectedSeverityFilterKey, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:SeverityFilterOption}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Ellipse Width="10"
+                                     Height="10"
+                                     VerticalAlignment="Center"
+                                     Margin="0,0,8,0">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Key}" Value="Todos">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Key}" Value="Alta">
+                                                <Setter Property="Fill" Value="{StaticResource SeverityIndicatorHighBrush}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Key}" Value="Media">
+                                                <Setter Property="Fill" Value="{StaticResource SeverityIndicatorMediumBrush}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Key}" Value="Baja">
+                                                <Setter Property="Fill" Value="{StaticResource SeverityIndicatorLowBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock VerticalAlignment="Center" Text="{Binding Label}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <StackPanel Grid.Column="2"
+                        Margin="16,0,0,0"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <StackPanel Margin="0,0,16,0" Orientation="Horizontal">
+                    <Ellipse Width="10"
+                             Height="10"
+                             VerticalAlignment="Center"
+                             Margin="0,0,6,0"
+                             Fill="{StaticResource SeverityIndicatorHighBrush}" />
+                    <TextBlock VerticalAlignment="Center">
+                        <Run Text="Alta: " />
+                        <Run Text="{Binding HighCount, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Margin="0,0,16,0" Orientation="Horizontal">
+                    <Ellipse Width="10"
+                             Height="10"
+                             VerticalAlignment="Center"
+                             Margin="0,0,6,0"
+                             Fill="{StaticResource SeverityIndicatorMediumBrush}" />
+                    <TextBlock VerticalAlignment="Center">
+                        <Run Text="Media: " />
+                        <Run Text="{Binding MediumCount, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Margin="0,0,16,0" Orientation="Horizontal">
+                    <Ellipse Width="10"
+                             Height="10"
+                             VerticalAlignment="Center"
+                             Margin="0,0,6,0"
+                             Fill="{StaticResource SeverityIndicatorLowBrush}" />
+                    <TextBlock VerticalAlignment="Center">
+                        <Run Text="Baja: " />
+                        <Run Text="{Binding LowCount, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+                <TextBlock VerticalAlignment="Center">
+                    <Run Text="Total: " />
+                    <Run Text="{Binding TotalCount, Mode=OneWay}" />
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <!-- Lista -->
+        <Grid Grid.Row="4">
+            <DataGrid Panel.ZIndex="0"
+                      ItemsSource="{Binding FilteredIssues}"
+                      Style="{StaticResource DataGridStyle}"
+                      RowStyle="{StaticResource IssueDataGridRowStyle}">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="44" Header="">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox HorizontalAlignment="Center"
+                                          IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Width="72"
+                                        Binding="{Binding RevitElementId}"
+                                        Header="ID" />
+                    <DataGridTextColumn Width="140"
+                                        Binding="{Binding Category}"
+                                        Header="Categoría" />
+                    <DataGridTextColumn Width="*"
+                                        MinWidth="120"
+                                        Binding="{Binding ElementName}"
+                                        Header="Nombre" />
+                    <DataGridTextColumn Width="180"
+                                        Binding="{Binding IssueTypeLabel}"
+                                        Header="Tipo de problema" />
+                    <DataGridTextColumn Width="110"
+                                        Binding="{Binding SeverityLabel}"
+                                        Header="Severidad" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Border Panel.ZIndex="1"
+                    Padding="16"
+                    Background="#F7F7F7"
+                    CornerRadius="4"
+                    Visibility="{Binding ShowRunPrompt, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="Pulse «Ejecutar QC» para analizar el modelo."
+                           TextAlignment="Center"
+                           TextWrapping="Wrap" />
+            </Border>
+
+            <Border Panel.ZIndex="1"
+                    Padding="16"
+                    Background="#F0FFF4"
+                    CornerRadius="4"
+                    Visibility="{Binding ShowEmptySuccess, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="#1B5E20"
+                           Text="✅ No se encontraron problemas en el modelo"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap" />
+            </Border>
+        </Grid>
+
+        <!-- Pie -->
+        <Grid Grid.Row="5" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <CheckBox VerticalAlignment="Center"
+                          Content="Seleccionar todos"
+                          Checked="SelectAllCheckBox_Checked"
+                          Unchecked="SelectAllCheckBox_Unchecked" />
+                <Button Margin="12,0,0,0"
+                        VerticalAlignment="Center"
+                        Command="{Binding SelectInRevitCommand}"
+                        Content="Seleccionar en Revit"
+                        Padding="10,4" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="6" Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock VerticalAlignment="Center">
+                <Run Text="Estado: " />
+                <Run Text="{Binding StatusMessage, Mode=OneWay}" />
+            </TextBlock>
+            <TextBlock Grid.Column="1"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Right">
+                <Run Text="Análisis: " />
+                <Run Text="{Binding AnalysisDateTime, Mode=OneWay}" />
+            </TextBlock>
+        </Grid>
+    </Grid>
+</Window>
