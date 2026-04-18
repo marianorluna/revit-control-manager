@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Control Manager: plan de compilación MSBuild. "Boilerplate" = lo típico de un Class Library .NET Framework + Revit; "Extra" = añadido para este proyecto o para evitar fallos. -->
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Boilerplate: metadatos base del ensamblado y framework. -->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProjectGuid>{D2B0A364-53EA-4E12-90F3-EA7F7E8B2D6B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ControlManager</RootNamespace>
+    <AssemblyName>ControlManager</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <!-- Extra: C# moderno y nullability (no es obligatorio para Revit, pero ayuda a calidad de código). -->
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <!-- Extra: símbolo REVIT2023 para #if en código multi-versión más adelante. TRACE es estándar. -->
+    <DefineConstants>TRACE;REVIT2023</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Boilerplate: opciones típicas de compilación Debug (símbolos, sin optimizar, salida bin\x64\Debug). -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;REVIT2023</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <!-- Extra: PostBuildEvent vacío a propósito; el despliegue a Addins lo hace el Target CopyAddinForDebug (evita errores de xcopy/cmd). -->
+    <PostBuildEvent />
+  </PropertyGroup>
+
+  <!-- Boilerplate: Release optimizado para entrega. -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;REVIT2023</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+
+  <!-- Boilerplate: referencias a la API de Revit (CopyLocal/Private=false como pide Autodesk) + WPF para UI futura. -->
+  <ItemGroup>
+    <Reference Include="RevitAPI">
+      <HintPath>C:\Program Files\Autodesk\Revit 2023\RevitAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>C:\Program Files\Autodesk\Revit 2023\RevitAPIUI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="mscorlib" />
+  </ItemGroup>
+
+  <!-- Boilerplate: lista de archivos .cs que entran en la DLL. -->
+  <ItemGroup>
+    <Compile Include="App.cs" />
+    <Compile Include="Commands\MainCommand.cs" />
+  </ItemGroup>
+
+  <!-- Boilerplate: manifiesto .addin en el repo; no se copia al bin salvo que lo pidas (Revit lo lee desde Addins o ruta del instalador). -->
+  <ItemGroup>
+    <None Include="ControlManager.addin">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <!-- Extra: ruta fija de Addins de usuario/máquina para Revit 2023 (solo usada por el target de abajo). -->
+  <PropertyGroup>
+    <RevitAddins2023Path>C:\ProgramData\Autodesk\Revit\Addins\2023\</RevitAddins2023Path>
+  </PropertyGroup>
+
+  <!-- Extra: tras cada Build en Debug|x64, copia .addin y .dll a Addins para probar en Revit sin copiar a mano. Usa tareas MSBuild (Copy/MakeDir), no xcopy. Solo Debug. -->
+  <Target Name="CopyAddinForDebug" AfterTargets="Build" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <MakeDir Directories="$(RevitAddins2023Path)" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\ControlManager.addin" DestinationFolder="$(RevitAddins2023Path)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(RevitAddins2023Path)" />
+  </Target>
+
+  <!-- Boilerplate: importa las reglas estándar de compilación C# (.NET Framework). -->
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
