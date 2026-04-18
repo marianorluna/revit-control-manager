@@ -122,5 +122,25 @@ namespace ControlManager.Utils
                 return false;
             }
         }
+
+        /// <summary>
+        /// Cuenta elementos del proyecto excluyendo tipos (para validar si el modelo tiene contenido analizable).
+        /// </summary>
+        public static int GetNonTypeElementCount(Document doc)
+        {
+            if (doc == null)
+            {
+                return 0;
+            }
+
+            try
+            {
+                return new FilteredElementCollector(doc).WhereElementIsNotElementType().ToElementIds().Count;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
     }
 }

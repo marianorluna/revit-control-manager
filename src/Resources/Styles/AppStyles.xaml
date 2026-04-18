@@ -59,6 +59,7 @@
 
     <Style x:Key="IssueDataGridRowStyle" TargetType="DataGridRow">
         <Setter Property="Background" Value="{Binding Severity, Converter={StaticResource SeverityToColorConverter}}" />
+        <Setter Property="ToolTip" Value="{Binding RowTooltip}" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Opacity" Value="0.92" />

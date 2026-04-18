@@ -23,6 +23,11 @@ namespace ControlManager.Models
 
         public string IssueDescription { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Texto para tooltip de fila: ID y descripción completa.
+        /// </summary>
+        public string RowTooltip => $"ID: {RevitElementId} | {IssueDescription}";
+
         public Severity Severity { get; set; }
 
         private bool _isSelected;

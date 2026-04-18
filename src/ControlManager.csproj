@@ -80,6 +80,7 @@
     <Compile Include="Services\QCService.cs" />
     <Compile Include="Utils\BoolToVisibilityConverter.cs" />
     <Compile Include="Utils\RelayCommand.cs" />
+    <Compile Include="Utils\IconGenerator.cs" />
     <Compile Include="Utils\RevitHelper.cs" />
     <Compile Include="Utils\SeverityToColorConverter.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

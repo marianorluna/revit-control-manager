@@ -24,7 +24,7 @@ namespace ControlManager.Commands
                 {
                     TaskDialog.Show(
                         "Control Manager",
-                        "No hay un documento activo. Abre un proyecto de Revit e inténtalo de nuevo.");
+                        "No hay ningún modelo abierto.");
                     return Result.Cancelled;
                 }
 
@@ -32,7 +32,15 @@ namespace ControlManager.Commands
                 {
                     TaskDialog.Show(
                         "Control Manager",
-                        "Este comando solo está disponible en un proyecto de Revit. Cierra el editor de familias y abre un proyecto.");
+                        "Este plugin solo funciona en proyectos de Revit, no en familias.");
+                    return Result.Cancelled;
+                }
+
+                if (RevitHelper.GetNonTypeElementCount(doc) == 0)
+                {
+                    TaskDialog.Show(
+                        "Control Manager",
+                        "El modelo está vacío o no tiene elementos analizables.");
                     return Result.Cancelled;
                 }
 

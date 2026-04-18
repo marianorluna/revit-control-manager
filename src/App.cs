@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Autodesk.Revit.UI;
+using ControlManager.Utils;
 
 namespace ControlManager
 {
@@ -28,7 +29,17 @@ namespace ControlManager
                     LongDescription = "Detecta elementos con parámetros vacíos, cuartos sin encerrar y nombres faltantes. Compatible con Revit 2023-2026."
                 };
 
-                panel.AddItem(buttonData);
+                RibbonItem ribbonItem = panel.AddItem(buttonData);
+                if (ribbonItem is PushButton pushButton)
+                {
+                    pushButton.LargeImage = IconGenerator.GetIcon(32);
+                    pushButton.Image = IconGenerator.GetIcon(16);
+                    pushButton.SetContextualHelp(
+                        new ContextualHelp(
+                            ContextualHelpType.Url,
+                            "https://github.com/control-manager/control-manager"));
+                }
+
                 return Result.Succeeded;
             }
             catch (Exception ex)

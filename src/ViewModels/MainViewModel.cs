@@ -50,8 +50,8 @@ namespace ControlManager.ViewModels
             ModelName = document.Title ?? string.Empty;
 
             RunChecksCommand = new RelayCommand(ExecuteRunChecks, () => !IsRunning);
-            ExportCommand = new RelayCommand(ExecuteExport);
-            SelectInRevitCommand = new RelayCommand(ExecuteSelectInRevit);
+            ExportCommand = new RelayCommand(ExecuteExport, () => !IsRunning);
+            SelectInRevitCommand = new RelayCommand(ExecuteSelectInRevit, () => !IsRunning);
             SelectAllCommand = new RelayCommand(ExecuteSelectAll, () => FilteredIssues.Count > 0);
             DeselectAllCommand = new RelayCommand(ExecuteDeselectAll, () => FilteredIssues.Count > 0);
 
@@ -109,14 +109,20 @@ namespace ControlManager.ViewModels
                 }
 
                 OnPropertyChanged(nameof(RunChecksButtonText));
+                OnPropertyChanged(nameof(CanInteractWithModel));
                 CommandManager.InvalidateRequerySuggested();
             }
         }
 
         /// <summary>
+        /// Deshabilita filtros y acciones secundarias mientras corre el análisis.
+        /// </summary>
+        public bool CanInteractWithModel => !IsRunning;
+
+        /// <summary>
         /// Texto del botón principal según si hay análisis en curso.
         /// </summary>
-        public string RunChecksButtonText => IsRunning ? "Analizando..." : "▶ Ejecutar QC";
+        public string RunChecksButtonText => IsRunning ? "⏳ Analizando..." : "▶ Ejecutar QC";
 
         public bool HasIssues => FilteredIssues.Count > 0;
 
@@ -137,8 +143,14 @@ namespace ControlManager.ViewModels
 
                 OnPropertyChanged(nameof(ShowEmptySuccess));
                 OnPropertyChanged(nameof(ShowRunPrompt));
+                OnPropertyChanged(nameof(ShowResultsGrid));
             }
         }
+
+        /// <summary>
+        /// Muestra la rejilla de resultados tras un QC con incidencias.
+        /// </summary>
+        public bool ShowResultsGrid => HasRunAnalysis && AllIssues.Count > 0;
 
         /// <summary>
         /// Muestra el mensaje de éxito cuando el análisis terminó sin incidencias en el modelo.
@@ -278,6 +290,7 @@ namespace ControlManager.ViewModels
             OnPropertyChanged(nameof(HasNoIssues));
             OnPropertyChanged(nameof(ShowEmptySuccess));
             OnPropertyChanged(nameof(ShowRunPrompt));
+            OnPropertyChanged(nameof(ShowResultsGrid));
         }
 
         private void ExecuteRunChecks()
