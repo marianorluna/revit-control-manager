@@ -56,5 +56,11 @@ namespace ControlManager.UI
 
             e.Handled = true;
         }
+
+        private void PrivacyPolicyLink_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new PrivacyPolicyWindow { Owner = this };
+            window.ShowDialog();
+        }
     }
 }

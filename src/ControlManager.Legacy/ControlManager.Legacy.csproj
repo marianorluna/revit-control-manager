@@ -181,8 +181,10 @@
     <Compile Include="Commands\MainCommand.cs" />
     <Compile Include="Commands\MainWindowSession.cs" />
     <Compile Include="Services\ExportService.cs" />
+    <Compile Include="Services\FirstRunService.cs" />
     <Compile Include="Services\QCService.cs" />
     <Compile Include="Utils\BoolToVisibilityConverter.cs" />
+    <Compile Include="Utils\PrivacyPolicyHtmlPath.cs" />
     <Compile Include="Utils\RelayCommand.cs" />
     <Compile Include="Utils\IconGenerator.cs" />
     <Compile Include="Utils\RevitHelper.cs" />
@@ -190,6 +192,9 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\PrivacyPolicyWindow.xaml.cs">
+      <DependentUpon>PrivacyPolicyWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -207,17 +212,26 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\PrivacyPolicyWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="..\..\docs\privacy-policy.html" Link="docs\privacy-policy.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <!-- Copia ControlManager.dll y dependencias NuGet al mismo directorio que Revit carga (misma carpeta que el .addin). -->
   <Target Name="DeployAddinToRevitAddinsFolder" AfterTargets="Build" Condition="'$(RevitAddinsPath)' != '' AND '$(DeployRevitAddinToFolder)' != 'false'">
     <MakeDir Directories="$(RevitAddinsPath)" />
+    <MakeDir Directories="$(RevitAddinsPath)docs" />
     <!-- IgnoreExitCode: Revit bloquea DLLs en uso; el build no debe fallar. Cierra Revit y recompila para actualizar Addins. -->
     <Exec Command="cmd /c copy /Y &quot;$(TargetDir)*.dll&quot; &quot;$(RevitAddinsPath)&quot;" IgnoreExitCode="true" />
+    <Exec Command="cmd /c copy /Y &quot;$(TargetDir)docs\privacy-policy.html&quot; &quot;$(RevitAddinsPath)docs\privacy-policy.html&quot;" IgnoreExitCode="true" Condition="Exists('$(TargetDir)docs\privacy-policy.html')" />
     <Exec Command="cmd /c copy /Y &quot;$(MSBuildProjectDirectory)\ControlManager.addin&quot; &quot;$(RevitAddinsPath)ControlManager.addin&quot;" IgnoreExitCode="true" Condition="Exists('$(MSBuildProjectDirectory)\ControlManager.addin')" />
     <Message Importance="high" Text="Control Manager: copia a $(RevitAddinsPath) intentada ($(Configuration)). Si Revit estaba abierto, ciérralo y vuelve a compilar." />
   </Target>

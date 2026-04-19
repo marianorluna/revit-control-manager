@@ -2,6 +2,7 @@ using System;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using ControlManager.Services;
 using ControlManager.Utils;
 
 namespace ControlManager.Commands
@@ -40,6 +41,12 @@ namespace ControlManager.Commands
                     TaskDialog.Show(
                         "Control Manager",
                         "El modelo está vacío o no tiene elementos analizables.");
+                    return Result.Cancelled;
+                }
+
+                bool eulaOk = FirstRunService.ShowFirstRunDialogIfNeeded(null);
+                if (!eulaOk)
+                {
                     return Result.Cancelled;
                 }
 

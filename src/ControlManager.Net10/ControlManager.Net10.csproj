@@ -53,8 +53,10 @@
     <Compile Include="..\ControlManager.Legacy\Commands\MainCommand.cs" Link="Commands\MainCommand.cs" />
     <Compile Include="..\ControlManager.Legacy\Commands\MainWindowSession.cs" Link="Commands\MainWindowSession.cs" />
     <Compile Include="..\ControlManager.Legacy\Services\ExportService.cs" Link="Services\ExportService.cs" />
+    <Compile Include="..\ControlManager.Legacy\Services\FirstRunService.cs" Link="Services\FirstRunService.cs" />
     <Compile Include="..\ControlManager.Legacy\Services\QCService.cs" Link="Services\QCService.cs" />
     <Compile Include="..\ControlManager.Legacy\Utils\BoolToVisibilityConverter.cs" Link="Utils\BoolToVisibilityConverter.cs" />
+    <Compile Include="..\ControlManager.Legacy\Utils\PrivacyPolicyHtmlPath.cs" Link="Utils\PrivacyPolicyHtmlPath.cs" />
     <Compile Include="..\ControlManager.Legacy\Utils\RelayCommand.cs" Link="Utils\RelayCommand.cs" />
     <Compile Include="..\ControlManager.Legacy\Utils\IconGenerator.cs" Link="Utils\IconGenerator.cs" />
     <Compile Include="..\ControlManager.Legacy\Utils\RevitHelper.cs" Link="Utils\RevitHelper.cs" />
@@ -62,6 +64,9 @@
     <Compile Include="..\ControlManager.Legacy\ViewModels\MainViewModel.cs" Link="ViewModels\MainViewModel.cs" />
     <Compile Include="..\ControlManager.Legacy\UI\MainWindow.xaml.cs" Link="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\ControlManager.Legacy\UI\PrivacyPolicyWindow.xaml.cs" Link="UI\PrivacyPolicyWindow.xaml.cs">
+      <DependentUpon>PrivacyPolicyWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -79,15 +84,24 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="..\ControlManager.Legacy\UI\PrivacyPolicyWindow.xaml" Link="UI\PrivacyPolicyWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\ControlManager.Legacy\ControlManager.addin" Link="ControlManager.addin" />
+    <None Include="..\..\docs\privacy-policy.html" Link="docs\privacy-policy.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <Target Name="DeployAddinToRevitAddinsFolder" AfterTargets="Build" Condition="'$(RevitAddinsPath)' != '' AND '$(DeployRevitAddinToFolder)' != 'false'">
     <MakeDir Directories="$(RevitAddinsPath)" />
+    <MakeDir Directories="$(RevitAddinsPath)docs" />
     <Exec Command="cmd /c copy /Y &quot;$(TargetDir)*.dll&quot; &quot;$(RevitAddinsPath)&quot;" IgnoreExitCode="true" />
+    <Exec Command="cmd /c copy /Y &quot;$(TargetDir)docs\privacy-policy.html&quot; &quot;$(RevitAddinsPath)docs\privacy-policy.html&quot;" IgnoreExitCode="true" Condition="Exists('$(TargetDir)docs\privacy-policy.html')" />
     <Exec Command="cmd /c copy /Y &quot;$(MSBuildProjectDirectory)\..\ControlManager.Legacy\ControlManager.addin&quot; &quot;$(RevitAddinsPath)ControlManager.addin&quot;" IgnoreExitCode="true" Condition="Exists('$(MSBuildProjectDirectory)\..\ControlManager.Legacy\ControlManager.addin')" />
     <Message Importance="high" Text="Control Manager: copia a $(RevitAddinsPath) intentada ($(Configuration)). Si Revit estaba abierto, ciérralo y vuelve a compilar." />
   </Target>

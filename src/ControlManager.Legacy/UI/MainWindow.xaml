@@ -302,8 +302,13 @@
             </TextBlock>
             <TextBlock Grid.Column="2"
                        VerticalAlignment="Center"
-                       HorizontalAlignment="Right"
-                       Text="Control Manager v1.0 | APS Developer" />
+                       HorizontalAlignment="Right">
+                <Hyperlink Click="PrivacyPolicyLink_Click"
+                           ToolTip="Abrir la política de privacidad">
+                    Política de Privacidad
+                </Hyperlink>
+                <Run Text=" | Control Manager v1.0 | APS Developer" />
+            </TextBlock>
         </Grid>
     </Grid>
 </Window>
