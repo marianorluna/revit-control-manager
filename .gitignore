@@ -52,3 +52,6 @@ Desktop.ini
 
 files-test/
 .cursor/
+
+# Bundle App Store: binarios copiados con installer/populate_bundle.bat (no versionar)
+bundle/ControlManager.bundle/Contents/**/*.dll
