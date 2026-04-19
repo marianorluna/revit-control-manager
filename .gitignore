@@ -55,3 +55,11 @@ files-test/
 
 # Bundle App Store: binarios copiados con installer/populate_bundle.bat (no versionar)
 bundle/ControlManager.bundle/Contents/**/*.dll
+
+# Addins de debug/local (el bundle versionado si se mantiene)
+**/bin/**/*.addin
+**/obj/**/*.addin
+
+# Artefactos de release (assets para GitHub Releases, no versionar)
+releases/*
+!releases/.gitkeep
