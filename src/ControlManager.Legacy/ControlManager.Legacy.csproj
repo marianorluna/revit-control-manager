@@ -179,6 +179,7 @@
     <Compile Include="..\ControlManager.Shared\Models\SeverityFilterOption.cs" Link="Models\SeverityFilterOption.cs" />
     <Compile Include="App.cs" />
     <Compile Include="Commands\MainCommand.cs" />
+    <Compile Include="Commands\MainWindowSession.cs" />
     <Compile Include="Services\ExportService.cs" />
     <Compile Include="Services\QCService.cs" />
     <Compile Include="Utils\BoolToVisibilityConverter.cs" />
@@ -190,6 +191,11 @@
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\icon_16.png" />
+    <Resource Include="Resources\Icons\icon_32.png" />
   </ItemGroup>
 
   <ItemGroup>

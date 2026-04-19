@@ -21,6 +21,27 @@ namespace ControlManager.UI
             Closing += MainWindow_Closing;
         }
 
+        /// <summary>
+        /// Indica si la ventana sigue mostrando el mismo documento que el activo en Revit.
+        /// </summary>
+        internal bool IsBoundToDocument(Document doc)
+        {
+            return DataContext is MainViewModel vm && ReferenceEquals(vm.Document, doc);
+        }
+
+        /// <summary>
+        /// Trae la ventana al frente y la restaura si estaba minimizada (reuso desde el ribbon).
+        /// </summary>
+        internal void ActivateForReuse()
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                WindowState = WindowState.Normal;
+            }
+
+            Activate();
+        }
+
         private void MainWindow_Closing(object? sender, CancelEventArgs e)
         {
             // No cancelar el cierre; no se requiere lógica adicional para la sesión de Revit.

@@ -2,7 +2,6 @@ using System;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using ControlManager.UI;
 using ControlManager.Utils;
 
 namespace ControlManager.Commands
@@ -44,8 +43,7 @@ namespace ControlManager.Commands
                     return Result.Cancelled;
                 }
 
-                var window = new MainWindow(doc, uiDoc!);
-                window.ShowDialog();
+                MainWindowSession.ShowSingleton(doc, uiDoc!);
                 return Result.Succeeded;
             }
             catch (Exception ex)

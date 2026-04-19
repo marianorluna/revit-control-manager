@@ -51,6 +51,7 @@
     <Compile Include="..\ControlManager.Shared\Models\SeverityFilterOption.cs" Link="Models\SeverityFilterOption.cs" />
     <Compile Include="..\ControlManager.Legacy\App.cs" Link="App.cs" />
     <Compile Include="..\ControlManager.Legacy\Commands\MainCommand.cs" Link="Commands\MainCommand.cs" />
+    <Compile Include="..\ControlManager.Legacy\Commands\MainWindowSession.cs" Link="Commands\MainWindowSession.cs" />
     <Compile Include="..\ControlManager.Legacy\Services\ExportService.cs" Link="Services\ExportService.cs" />
     <Compile Include="..\ControlManager.Legacy\Services\QCService.cs" Link="Services\QCService.cs" />
     <Compile Include="..\ControlManager.Legacy\Utils\BoolToVisibilityConverter.cs" Link="Utils\BoolToVisibilityConverter.cs" />
@@ -62,6 +63,11 @@
     <Compile Include="..\ControlManager.Legacy\UI\MainWindow.xaml.cs" Link="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="..\ControlManager.Legacy\Resources\Icons\icon_16.png" Link="Resources\Icons\icon_16.png" />
+    <Resource Include="..\ControlManager.Legacy\Resources\Icons\icon_32.png" Link="Resources\Icons\icon_32.png" />
   </ItemGroup>
 
   <ItemGroup>

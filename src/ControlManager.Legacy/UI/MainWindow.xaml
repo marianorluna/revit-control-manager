@@ -220,21 +220,26 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Width="72"
-                                            Binding="{Binding RevitElementId}"
-                                            Header="ID" />
+                                            Binding="{Binding RevitElementId, Mode=OneWay}"
+                                            Header="ID"
+                                            IsReadOnly="True" />
                         <DataGridTextColumn Width="140"
-                                            Binding="{Binding Category}"
-                                            Header="Categoría" />
+                                            Binding="{Binding Category, Mode=OneWay}"
+                                            Header="Categoría"
+                                            IsReadOnly="True" />
                         <DataGridTextColumn Width="*"
                                             MinWidth="120"
-                                            Binding="{Binding ElementName}"
-                                            Header="Nombre" />
+                                            Binding="{Binding ElementName, Mode=OneWay}"
+                                            Header="Nombre"
+                                            IsReadOnly="True" />
                         <DataGridTextColumn Width="180"
-                                            Binding="{Binding IssueTypeLabel}"
-                                            Header="Tipo de problema" />
+                                            Binding="{Binding IssueTypeLabel, Mode=OneWay}"
+                                            Header="Tipo de problema"
+                                            IsReadOnly="True" />
                         <DataGridTextColumn Width="110"
-                                            Binding="{Binding SeverityLabel}"
-                                            Header="Severidad" />
+                                            Binding="{Binding SeverityLabel, Mode=OneWay}"
+                                            Header="Severidad"
+                                            IsReadOnly="True" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>

@@ -59,6 +59,11 @@ namespace ControlManager.ViewModels
         }
 
         /// <summary>
+        /// Documento de Revit asociado a esta sesión de la ventana (para reutilizar una sola ventana por modelo).
+        /// </summary>
+        public Document Document => _document;
+
+        /// <summary>
         /// Solicita cerrar la ventana WPF (p. ej. tras seleccionar en Revit).
         /// </summary>
         public event EventHandler? RequestCloseWindow;

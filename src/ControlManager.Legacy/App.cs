@@ -37,7 +37,7 @@ namespace ControlManager
                     pushButton.SetContextualHelp(
                         new ContextualHelp(
                             ContextualHelpType.Url,
-                            "https://github.com/control-manager/control-manager"));
+                            "https://github.com/marianorluna"));
                 }
 
                 return Result.Succeeded;
