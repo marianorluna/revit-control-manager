@@ -37,7 +37,7 @@ namespace ControlManager
                     pushButton.SetContextualHelp(
                         new ContextualHelp(
                             ContextualHelpType.Url,
-                            "https://github.com/marianorluna/plugin-revit/blob/main/README.md"));
+                            "https://github.com/marianorluna/revit-control-manager/blob/main/README.md"));
                 }
 
                 return Result.Succeeded;
