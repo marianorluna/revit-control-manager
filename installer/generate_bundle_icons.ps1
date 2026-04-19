@@ -71,7 +71,7 @@ $root = Split-Path $PSScriptRoot -Parent
 $legacyIcons = Join-Path $root 'src\ControlManager.Legacy\Resources\Icons'
 $bundleRes = Join-Path $root 'bundle\ControlManager.bundle\Resources'
 
-foreach ($size in @(16, 32)) {
+foreach ($size in @(16, 32, 120)) {
     $name = "icon_$size.png"
     $p1 = Join-Path $legacyIcons $name
     $p2 = Join-Path $bundleRes $name

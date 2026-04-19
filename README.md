@@ -67,9 +67,9 @@ Disponible proximamente.
 
 ## Capturas
 
-- `docs/screenshots/main-window.png`
-- `docs/screenshots/excel-export.png`
-- `docs/screenshots/ribbon-button.png`
+![Ventana principal del plugin](docs/screenshots/main-window.png)
+![Exportación a Excel](docs/screenshots/excel-export.png)
+![Botón en el Ribbon de Revit](docs/screenshots/ribbon-button.png)
 
 ## Roadmap
 
