@@ -41,14 +41,59 @@ La revision ocurre sobre el modelo local, sin dependencia de servicios externos.
 
 ## Instalacion
 
-### Opcion A - Manual (desarrollo)
+### Opcion A - Desde ZIP (Release)
 
-1. Descarga la version desde `releases/`.
-2. Ejecuta `installer/install_bundle.bat` como administrador.
-3. Reinicia Revit.
-4. Verifica que el tab **Control Manager** aparezca en el ribbon.
+1. Descarga `ControlManager_vX.Y.Z.zip` desde la seccion de Releases.
+2. Descomprime el ZIP.
+3. Copia la carpeta `ControlManager.bundle` en:
+   `%APPDATA%\Autodesk\ApplicationPlugins\`
+4. Verifica que exista:
+   `%APPDATA%\Autodesk\ApplicationPlugins\ControlManager.bundle\PackageContents.xml`
+5. Reinicia Revit.
+6. Verifica que el tab **Control Manager** aparezca en el ribbon.
 
-### Opcion B - Autodesk App Store
+### Solucion si aparece error de carga (`FileLoadException 0x80131515`)
+
+En algunos equipos Windows, los archivos descargados desde internet quedan bloqueados.
+Si Revit no puede cargar `ControlManager.dll`, desbloquea el bundle con PowerShell:
+
+```powershell
+Get-ChildItem "$env:APPDATA\Autodesk\ApplicationPlugins\ControlManager.bundle" -Recurse -File | Unblock-File
+```
+
+Luego reinicia Revit.
+
+### Nota sobre primera ejecucion (Privacidad / EULA)
+
+El dialogo de privacidad y aceptacion de terminos se muestra en el primer lanzamiento del comando del plugin (al pulsar el boton de Control Manager), no al iniciar Revit.
+Una vez aceptado, no vuelve a mostrarse para ese usuario.
+
+### Opcion B - Instalador automatico (EXE)
+
+Tambien puedes usar el instalador para evitar pasos manuales:
+
+1. Descarga `ControlManager_Installer_vX.Y.Z.zip` desde Releases.
+2. Descomprime el ZIP.
+3. Ejecuta `ControlManager.Installer.exe` (single-file, sin bundle externo).
+4. Si no estaba instalado, instala en `%APPDATA%\Autodesk\ApplicationPlugins\ControlManager.bundle`.
+5. Si ya estaba instalado, muestra confirmacion y permite desinstalar (modo toggle).
+6. Reinicia Revit.
+
+Al completar la instalacion o la desinstalacion, el instalador muestra un mensaje de confirmacion visual (ademas del texto en la ventana de consola).
+
+Desinstalacion:
+
+```bash
+ControlManager.Installer.exe --uninstall
+```
+
+Instalacion forzada:
+
+```bash
+ControlManager.Installer.exe --install
+```
+
+### Opcion C - Autodesk App Store
 
 Disponible proximamente.
 

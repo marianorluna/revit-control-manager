@@ -63,3 +63,7 @@ bundle/ControlManager.bundle/Contents/**/*.dll
 # Artefactos de release (assets para GitHub Releases, no versionar)
 releases/*
 !releases/.gitkeep
+
+# Artefactos temporales del instalador EXE
+installer/dist/
+installer/ControlManager.BundleInstaller/Assets/ControlManager.bundle.zip
