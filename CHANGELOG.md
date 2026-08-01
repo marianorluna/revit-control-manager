@@ -1,5 +1,14 @@
 # Changelog
 
+## [v1.0.1] - 2026-08-01
+
+### App Store / seguridad
+
+- Actualiza `System.IO.Packaging` de 8.0.0 a 10.0.10 (vulnerabilidad detectada por Autodesk).
+- Empaqueta DLLs para Revit 2023-2027 en el bundle.
+- Corrige runtime: 2023-2024 (.NET Framework 4.8), 2025-2026 (.NET 8), 2027 (.NET 10).
+- `ElementId`: usa `Value` (long) desde Revit 2024+ (requerido en 2026+).
+
 ## [v1.0.0] - 2026-04-16
 
 ### Primera version

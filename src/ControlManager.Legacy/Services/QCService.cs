@@ -340,7 +340,7 @@ namespace ControlManager.Services
         {
             return new ElementIssue
             {
-                RevitElementId = e.Id.IntegerValue,
+                RevitElementId = RevitHelper.GetElementIdValue(e.Id),
                 ElementName = RevitHelper.GetElementName(e),
                 Category = RevitHelper.GetCategoryName(e),
                 TypeName = GetTypeName(doc, e),

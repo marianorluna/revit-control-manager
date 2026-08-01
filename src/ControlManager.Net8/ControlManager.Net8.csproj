@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWpf>true</UseWpf>
     <OutputType>Library</OutputType>
     <Platforms>x64</Platforms>
-    <Configurations>Debug2027;Release2027</Configurations>
+    <Configurations>Debug2025;Release2025;Debug2026;Release2026</Configurations>
     <PlatformTarget>x64</PlatformTarget>
     <AssemblyName>ControlManager</AssemblyName>
     <RootNamespace>ControlManager</RootNamespace>
@@ -12,56 +12,86 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <NoWarn>$(NoWarn);WFO1000</NoWarn>
-    <ProjectGuid>{B7E4C9A1-2D3E-4F5A-8B9C-0D1E2F3A4B5C}</ProjectGuid>
+    <ProjectGuid>{A1C8E2F4-5B67-4D89-9E01-2A3B4C5D6E7F}</ProjectGuid>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug2027|x64'">
-    <DefineConstants>DEBUG;TRACE;REVIT2027</DefineConstants>
-    <OutputPath>bin\x64\Debug2027\</OutputPath>
-    <!-- Revit 2027 ya no carga all-users desde ProgramData; usar perfil de usuario. -->
-    <RevitAddinsPath>$(APPDATA)\Autodesk\Revit\Addins\2027\</RevitAddinsPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug2025|x64'">
+    <DefineConstants>DEBUG;TRACE;REVIT2025</DefineConstants>
+    <OutputPath>bin\x64\Debug2025\</OutputPath>
+    <RevitAddinsPath>C:\ProgramData\Autodesk\Revit\Addins\2025\</RevitAddinsPath>
+    <RevitYear>2025</RevitYear>
+    <Nice3pointApiVersion>2025.4.50</Nice3pointApiVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release2027|x64'">
-    <DefineConstants>TRACE;REVIT2027</DefineConstants>
-    <OutputPath>bin\Release2027\</OutputPath>
-    <RevitAddinsPath>$(APPDATA)\Autodesk\Revit\Addins\2027\</RevitAddinsPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release2025|x64'">
+    <DefineConstants>TRACE;REVIT2025</DefineConstants>
+    <OutputPath>bin\Release2025\</OutputPath>
+    <RevitAddinsPath>C:\ProgramData\Autodesk\Revit\Addins\2025\</RevitAddinsPath>
+    <RevitYear>2025</RevitYear>
+    <Nice3pointApiVersion>2025.4.50</Nice3pointApiVersion>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug2026|x64'">
+    <DefineConstants>DEBUG;TRACE;REVIT2026</DefineConstants>
+    <OutputPath>bin\x64\Debug2026\</OutputPath>
+    <RevitAddinsPath>C:\ProgramData\Autodesk\Revit\Addins\2026\</RevitAddinsPath>
+    <RevitYear>2026</RevitYear>
+    <Nice3pointApiVersion>2026.4.10</Nice3pointApiVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release2026|x64'">
+    <DefineConstants>TRACE;REVIT2026</DefineConstants>
+    <OutputPath>bin\Release2026\</OutputPath>
+    <RevitAddinsPath>C:\ProgramData\Autodesk\Revit\Addins\2026\</RevitAddinsPath>
+    <RevitYear>2026</RevitYear>
+    <Nice3pointApiVersion>2026.4.10</Nice3pointApiVersion>
+  </PropertyGroup>
+
+  <!-- API local si Revit del año está instalado -->
+  <ItemGroup Condition="'$(RevitYear)' != '' AND Exists('C:\Program Files\Autodesk\Revit $(RevitYear)\RevitAPI.dll')">
+    <Reference Include="RevitAPI">
+      <HintPath>C:\Program Files\Autodesk\Revit $(RevitYear)\RevitAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>C:\Program Files\Autodesk\Revit $(RevitYear)\RevitAPIUI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Fallback Nice3point: versiones fijas por configuración (restore/build -c ReleaseXXXX) -->
+  <ItemGroup Condition="('$(Configuration)' == 'Debug2025' OR '$(Configuration)' == 'Release2025') AND !Exists('C:\Program Files\Autodesk\Revit 2025\RevitAPI.dll')">
+    <PackageReference Include="Nice3point.Revit.Api.RevitAPI" Version="2025.4.50">
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" Version="2025.4.50">
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup Condition="('$(Configuration)' == 'Debug2026' OR '$(Configuration)' == 'Release2026') AND !Exists('C:\Program Files\Autodesk\Revit 2026\RevitAPI.dll')">
+    <PackageReference Include="Nice3point.Revit.Api.RevitAPI" Version="2026.4.10">
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" Version="2026.4.10">
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.1.1" />
     <PackageReference Include="DocumentFormat.OpenXml.Framework" Version="3.1.1" />
-    <!-- Pin explícito: evita System.IO.Packaging 8.0.0 transitivo (vulnerabilidad App Store) -->
-    <PackageReference Include="System.IO.Packaging" Version="10.0.10" GeneratePathProperty="true">
+    <!-- Pin explícito + copia al output (App Store escanea DLLs del paquete) -->
+    <PackageReference Include="System.IO.Packaging" Version="10.0.10">
       <PrivateAssets>none</PrivateAssets>
     </PackageReference>
   </ItemGroup>
 
-  <!-- API local si Revit 2027 está instalado; si no, Nice3point -->
-  <ItemGroup Condition="Exists('C:\Program Files\Autodesk\Revit 2027\RevitAPI.dll')">
-    <Reference Include="RevitAPI">
-      <HintPath>C:\Program Files\Autodesk\Revit 2027\RevitAPI.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="RevitAPIUI">
-      <HintPath>C:\Program Files\Autodesk\Revit 2027\RevitAPIUI.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition="!Exists('C:\Program Files\Autodesk\Revit 2027\RevitAPI.dll')">
-    <PackageReference Include="Nice3point.Revit.Api.RevitAPI" Version="2027.2.0">
-      <PrivateAssets>all</PrivateAssets>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
-    <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" Version="2027.2.0">
-      <PrivateAssets>all</PrivateAssets>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <!-- Código compartido con Legacy (misma ruta física; un solo archivo fuente) -->
   <ItemGroup>
     <Compile Include="..\ControlManager.Shared\Models\ElementIssue.cs" Link="Models\ElementIssue.cs" />
     <Compile Include="..\ControlManager.Shared\Models\Enums.cs" Link="Models\Enums.cs" />
@@ -113,18 +143,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-  <!-- net10 poda Packaging del output; forzar copia del pin 10.0.10 para el escáner App Store -->
-  <Target Name="CopyPinnedPackaging" AfterTargets="Build">
-    <PropertyGroup>
-      <_PackagingSrc>$(PkgSystem_IO_Packaging)\lib\net10.0\System.IO.Packaging.dll</_PackagingSrc>
-    </PropertyGroup>
-    <Copy
-      SourceFiles="$(_PackagingSrc)"
-      DestinationFolder="$(TargetDir)"
-      SkipUnchangedFiles="true"
-      Condition="Exists('$(_PackagingSrc)')" />
-  </Target>
 
   <Target Name="DeployAddinToRevitAddinsFolder" AfterTargets="Build" Condition="'$(RevitAddinsPath)' != '' AND '$(DeployRevitAddinToFolder)' != 'false'">
     <MakeDir Directories="$(RevitAddinsPath)" />

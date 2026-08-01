@@ -62,51 +62,7 @@
     <RevitAddinsPath>C:\ProgramData\Autodesk\Revit\Addins\2024\</RevitAddinsPath>
   </PropertyGroup>
 
-  <!-- Debug 2025 -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug2025|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\x64\Debug2025\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;REVIT2025</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <RevitAddinsPath>C:\ProgramData\Autodesk\Revit\Addins\2025\</RevitAddinsPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release2025|x64'">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release2025\</OutputPath>
-    <DefineConstants>TRACE;REVIT2025</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <RevitAddinsPath>C:\ProgramData\Autodesk\Revit\Addins\2025\</RevitAddinsPath>
-  </PropertyGroup>
-
-  <!-- Debug 2026 -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug2026|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\x64\Debug2026\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;REVIT2026</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <RevitAddinsPath>C:\ProgramData\Autodesk\Revit\Addins\2026\</RevitAddinsPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release2026|x64'">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release2026\</OutputPath>
-    <DefineConstants>TRACE;REVIT2026</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <RevitAddinsPath>C:\ProgramData\Autodesk\Revit\Addins\2026\</RevitAddinsPath>
-  </PropertyGroup>
+  <!-- Revit 2025/2026: proyecto ControlManager.Net8 (.NET 8). -->
 
   <!-- Revit API por año (solo una pareja activa por configuración) -->
   <ItemGroup Condition="'$(Configuration)' == 'Debug2023' OR '$(Configuration)' == 'Release2023'">
@@ -119,7 +75,8 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Debug2024' OR '$(Configuration)' == 'Release2024'">
+  <!-- 2024: API local si Revit está instalado; si no, Nice3point (solo compilación). -->
+  <ItemGroup Condition="('$(Configuration)' == 'Debug2024' OR '$(Configuration)' == 'Release2024') AND Exists('C:\Program Files\Autodesk\Revit 2024\RevitAPI.dll')">
     <Reference Include="RevitAPI">
       <HintPath>C:\Program Files\Autodesk\Revit 2024\RevitAPI.dll</HintPath>
       <Private>false</Private>
@@ -129,23 +86,13 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Debug2025' OR '$(Configuration)' == 'Release2025'">
+  <ItemGroup Condition="('$(Configuration)' == 'Debug2024' OR '$(Configuration)' == 'Release2024') AND !Exists('C:\Program Files\Autodesk\Revit 2024\RevitAPI.dll')">
     <Reference Include="RevitAPI">
-      <HintPath>C:\Program Files\Autodesk\Revit 2025\RevitAPI.dll</HintPath>
+      <HintPath>..\packages\Nice3point.Revit.Api.RevitAPI.2024.3.40\ref\net48\RevitAPI.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>C:\Program Files\Autodesk\Revit 2025\RevitAPIUI.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Debug2026' OR '$(Configuration)' == 'Release2026'">
-    <Reference Include="RevitAPI">
-      <HintPath>C:\Program Files\Autodesk\Revit 2026\RevitAPI.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="RevitAPIUI">
-      <HintPath>C:\Program Files\Autodesk\Revit 2026\RevitAPIUI.dll</HintPath>
+      <HintPath>..\packages\Nice3point.Revit.Api.RevitAPIUI.2024.3.40\ref\net48\RevitAPIUI.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
@@ -168,7 +115,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.IO.Packaging">
-      <HintPath>..\packages\System.IO.Packaging.8.0.0\lib\net462\System.IO.Packaging.dll</HintPath>
+      <HintPath>..\packages\System.IO.Packaging.10.0.10\lib\net462\System.IO.Packaging.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

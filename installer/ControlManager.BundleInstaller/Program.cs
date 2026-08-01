@@ -153,6 +153,7 @@ internal static class Program
 
         CopyDirectoryRecursive(sourceBundlePath, destinationBundlePath);
         UnblockFilesRecursive(destinationBundlePath);
+        InstallClassicAddinForRevit2027(destinationBundlePath);
 
         string destinationPackageContentsPath = Path.Combine(destinationBundlePath, "PackageContents.xml");
         if (!File.Exists(destinationPackageContentsPath))
@@ -165,15 +166,21 @@ internal static class Program
 
         WriteSuccess("Instalación completada.");
         WriteInfo("Reinicia Revit para cargar el plugin.");
+        WriteInfo("Busca el tab 'Control Manager' en el ribbon (no dentro de Complementos).");
         ShowInfoDialog(
-            "Instalación completada.\n\nReinicia Revit para cargar el plugin.");
+            "Instalación completada.\n\nReinicia Revit y busca el tab \"Control Manager\" en el ribbon.");
         return 0;
     }
 
     private static int UninstallBundle()
     {
         string destinationBundlePath = GetDestinationBundlePath();
-        if (!Directory.Exists(destinationBundlePath))
+        string classicAddins2027 = GetClassicAddins2027Path();
+        bool hadBundle = Directory.Exists(destinationBundlePath);
+        bool hadClassic = Directory.Exists(classicAddins2027) &&
+                          File.Exists(Path.Combine(classicAddins2027, "ControlManager.addin"));
+
+        if (!hadBundle && !hadClassic)
         {
             WriteInfo("No hay instalación para eliminar.");
             WriteInfo($"Ruta: {destinationBundlePath}");
@@ -181,11 +188,96 @@ internal static class Program
         }
 
         WriteInfo("Desinstalando Control Manager...");
-        WriteInfo($"Ruta: {destinationBundlePath}");
-        DeleteDirectorySafe(destinationBundlePath);
+        if (hadBundle)
+        {
+            WriteInfo($"Ruta bundle: {destinationBundlePath}");
+            DeleteDirectorySafe(destinationBundlePath);
+        }
+
+        UninstallClassicAddinForRevit2027();
         WriteSuccess("Desinstalación completada.");
         ShowInfoDialog("Desinstalación completada.");
         return 0;
+    }
+
+    /// <summary>
+    /// Copia la versión 2027 a %APPDATA%\Autodesk\Revit\Addins\2027 como respaldo.
+    /// Autoloader/.bundle a veces no carga en 2027; la ruta clásica de usuario sí.
+    /// </summary>
+    private static void InstallClassicAddinForRevit2027(string destinationBundlePath)
+    {
+        string source2027 = Path.Combine(destinationBundlePath, "Contents", "2027");
+        string dllPath = Path.Combine(source2027, "ControlManager.dll");
+        string addinPath = Path.Combine(source2027, "ControlManager.addin");
+        if (!File.Exists(dllPath) || !File.Exists(addinPath))
+        {
+            WriteInfo("Omitiendo registro clásico 2027 (no hay DLL/addin en Contents\\2027).");
+            return;
+        }
+
+        string classicRoot = GetClassicAddins2027Path();
+        Directory.CreateDirectory(classicRoot);
+
+        foreach (string file in Directory.EnumerateFiles(source2027, "*", SearchOption.TopDirectoryOnly))
+        {
+            string destFile = Path.Combine(classicRoot, Path.GetFileName(file));
+            File.Copy(file, destFile, overwrite: true);
+        }
+
+        string sourceDocs = Path.Combine(source2027, "docs");
+        string destDocs = Path.Combine(classicRoot, "docs");
+        if (Directory.Exists(sourceDocs))
+        {
+            CopyDirectoryRecursive(sourceDocs, destDocs);
+        }
+
+        UnblockFilesRecursive(classicRoot);
+        WriteInfo($"Registro clásico 2027: {classicRoot}");
+    }
+
+    private static void UninstallClassicAddinForRevit2027()
+    {
+        string classicRoot = GetClassicAddins2027Path();
+        if (!Directory.Exists(classicRoot))
+        {
+            return;
+        }
+
+        string[] knownNames =
+        {
+            "ControlManager.addin",
+            "ControlManager.dll",
+            "ControlManager.pdb",
+            "DocumentFormat.OpenXml.dll",
+            "DocumentFormat.OpenXml.Framework.dll",
+            "System.IO.Packaging.dll"
+        };
+
+        foreach (string name in knownNames)
+        {
+            string path = Path.Combine(classicRoot, name);
+            try
+            {
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+            catch
+            {
+                // Best-effort: Revit puede tener el archivo bloqueado.
+            }
+        }
+
+        TryDeleteDirectory(Path.Combine(classicRoot, "docs"));
+
+        WriteInfo($"Limpieza registro clásico 2027: {classicRoot}");
+    }
+
+    private static string GetClassicAddins2027Path()
+    {
+        string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        return Path.Combine(appData, "Autodesk", "Revit", "Addins", "2027");
     }
 
     private static void ShowInfoDialog(string message)

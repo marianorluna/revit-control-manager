@@ -10,12 +10,27 @@ namespace ControlManager.Utils
         /// <summary>
         /// Construye un <see cref="ElementId"/> desde el valor entero del modelo compartido.
         /// </summary>
-        /// <remarks>
-        /// Si en una versión futura de la API solo existiera <c>ElementId(long)</c>, añadir aquí rama <c>#if REVIT2027</c>.
-        /// </remarks>
         public static ElementId ElementIdFromInteger(int id)
         {
+#if REVIT2023
             return new ElementId(id);
+#else
+            // Revit 2024+: constructor long (int deprecado; eliminado en 2026+).
+            return new ElementId((long)id);
+#endif
+        }
+
+        /// <summary>
+        /// Obtiene el identificador numérico de un <see cref="ElementId"/> compatible con el modelo compartido (int).
+        /// Revit 2023: <c>IntegerValue</c>. Revit 2024+: <c>Value</c> (long); IntegerValue eliminado en 2026+.
+        /// </summary>
+        public static int GetElementIdValue(ElementId id)
+        {
+#if REVIT2023
+            return id.IntegerValue;
+#else
+            return checked((int)id.Value);
+#endif
         }
 
         public static string GetElementName(Element e)

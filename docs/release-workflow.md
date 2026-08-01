@@ -13,10 +13,12 @@ Guia corta para generar y publicar una release del plugin sin commitear binarios
 ## Checklist rapido
 
 - [ ] Actualizar `CHANGELOG.md` con la nueva version.
-- [ ] Compilar en Release: `build_all.bat`.
-- [ ] Poblar DLLs del bundle: `installer/populate_bundle.bat`.
-- [ ] Validar estructura del bundle: `installer/test_bundle.bat`.
-- [ ] Generar ZIP: `releases/ControlManager_vX.Y.Z.zip`.
+- [ ] Compilar todas las versiones: `build_all.bat`
+  - 2023-2024: `ControlManager.Legacy` (.NET Framework 4.8)
+  - 2025-2026: `ControlManager.Net8` (.NET 8)
+  - 2027: `ControlManager.Net10` (.NET 10)
+- [ ] Poblar/verificar DLLs del bundle: `installer/populate_bundle.bat` (valida que Packaging != 8.0.0).
+- [ ] Generar ZIP bundle: `releases/ControlManager_vX.Y.Z.zip`.
 - [ ] Compilar instalador EXE: `installer/build_installer_exe.bat`.
 - [ ] Empaquetar asset instalador: `installer/package_installer_release.bat vX.Y.Z`.
 - [ ] Crear tag Git: `vX.Y.Z`.
