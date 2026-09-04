@@ -50,7 +50,7 @@ La revision ocurre sobre el modelo local, sin dependencia de servicios externos.
 4. Verifica que exista:
    `%APPDATA%\Autodesk\ApplicationPlugins\ControlManager.bundle\PackageContents.xml`
 5. Reinicia Revit.
-6. Verifica que el tab **Control Manager** aparezca en el ribbon.
+6. Verifica que el panel **Quality Control** aparezca en el tab **Add-Ins** (Complementos) del ribbon.
 
 ### Solucion si aparece error de carga (`FileLoadException 0x80131515`)
 

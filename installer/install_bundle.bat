@@ -53,5 +53,5 @@ if exist "%DEST%\Contents\2027\ControlManager.dll" (
 )
 
 echo.
-echo Instalación correcta. Reinicia Revit y busca el tab "Control Manager" en el ribbon.
+echo Instalación correcta. Reinicia Revit y busca el panel "Quality Control" en el tab Add-Ins / Complementos.
 exit /b 0

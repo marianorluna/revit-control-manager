@@ -166,9 +166,9 @@ internal static class Program
 
         WriteSuccess("Instalación completada.");
         WriteInfo("Reinicia Revit para cargar el plugin.");
-        WriteInfo("Busca el tab 'Control Manager' en el ribbon (no dentro de Complementos).");
+        WriteInfo("Busca el panel 'Quality Control' en el tab Add-Ins / Complementos del ribbon.");
         ShowInfoDialog(
-            "Instalación completada.\n\nReinicia Revit y busca el tab \"Control Manager\" en el ribbon.");
+            "Instalación completada.\n\nReinicia Revit y busca el panel \"Quality Control\" en el tab Add-Ins (Complementos).");
         return 0;
     }
 

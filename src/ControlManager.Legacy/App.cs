@@ -7,16 +7,14 @@ namespace ControlManager
 {
     public class App : IExternalApplication
     {
-        private const string TabName = "Control Manager";
         private const string PanelName = "Quality Control";
 
         public Result OnStartup(UIControlledApplication application)
         {
             try
             {
-                TryCreateTab(application, TabName);
-
-                RibbonPanel panel = application.CreateRibbonPanel(TabName, PanelName);
+                // Un solo botón: se registra en el tab Add-Ins (Complementos), no en un tab propio.
+                RibbonPanel panel = application.CreateRibbonPanel(PanelName);
                 string assemblyPath = Assembly.GetExecutingAssembly().Location;
 
                 PushButtonData buttonData = new PushButtonData(
@@ -52,18 +50,6 @@ namespace ControlManager
         public Result OnShutdown(UIControlledApplication application)
         {
             return Result.Succeeded;
-        }
-
-        private static void TryCreateTab(UIControlledApplication application, string tabName)
-        {
-            try
-            {
-                application.CreateRibbonTab(tabName);
-            }
-            catch (Autodesk.Revit.Exceptions.ArgumentException)
-            {
-                // El tab ya existe; no es un error.
-            }
         }
     }
 }
