@@ -4,8 +4,8 @@
   AutodeskProduct="Revit"
   Name="Control Manager"
   Description="Plugin de Quality Control para Coordinadores BIM. Detecta problemas en modelos Revit y genera reportes Excel."
-  AppVersion="1.0.1"
-  FriendlyVersion="1.0.1"
+  AppVersion="1.0.2"
+  FriendlyVersion="1.0.2"
   ProductType="Application"
   SupportedLocales="es-ES,en-US"
   AppNameSpace="com.controlmanager"
@@ -30,7 +30,7 @@
     <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2023" />
     <ComponentEntry
       AppName="ControlManager2023"
-      Version="1.0.1"
+      Version="1.0.2"
       AppType="ManagedPlugin"
       ModuleName="./Contents/2023/ControlManager.addin"
       AppDescription="Control Manager para Revit 2023"
@@ -41,7 +41,7 @@
     <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2024" />
     <ComponentEntry
       AppName="ControlManager2024"
-      Version="1.0.1"
+      Version="1.0.2"
       AppType="ManagedPlugin"
       ModuleName="./Contents/2024/ControlManager.addin"
       AppDescription="Control Manager para Revit 2024"
@@ -52,7 +52,7 @@
     <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2025" />
     <ComponentEntry
       AppName="ControlManager2025"
-      Version="1.0.1"
+      Version="1.0.2"
       AppType="ManagedPlugin"
       ModuleName="./Contents/2025/ControlManager.addin"
       AppDescription="Control Manager para Revit 2025 (.NET 8)"
@@ -63,7 +63,7 @@
     <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2026" />
     <ComponentEntry
       AppName="ControlManager2026"
-      Version="1.0.1"
+      Version="1.0.2"
       AppType="ManagedPlugin"
       ModuleName="./Contents/2026/ControlManager.addin"
       AppDescription="Control Manager para Revit 2026 (.NET 8)"
@@ -74,7 +74,7 @@
     <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2027" />
     <ComponentEntry
       AppName="ControlManager2027"
-      Version="1.0.1"
+      Version="1.0.2"
       AppType="ManagedPlugin"
       ModuleName="./Contents/2027/ControlManager.addin"
       AppDescription="Control Manager para Revit 2027 (.NET 10)"

@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.0.2] - 2026-09-04
+
+### UI / ribbon
+
+- Icono de aplicacion en la ventana principal y en el dialogo de privacidad.
+- Panel del ribbon renombrado a **Quality Control**.
+
 ## [v1.0.1] - 2026-08-01
 
 ### App Store / seguridad

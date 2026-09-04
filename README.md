@@ -3,7 +3,7 @@
 Plugin de Quality Control para Autodesk Revit orientado a Coordinadores BIM que necesitan validar modelos de forma consistente y con trazabilidad.
 
 [![Revit](https://img.shields.io/badge/Revit-2023--2027-0A66C2)]()
-[![Framework](https://img.shields.io/badge/Framework-.NET%204.8%20%7C%20.NET%2010-512BD4)]()
+[![Framework](https://img.shields.io/badge/Framework-.NET%204.8%20%7C%20.NET%208%20%7C%20.NET%2010-512BD4)]()
 [![License](https://img.shields.io/badge/License-MIT-2EA043)]()
 
 ## Que es Control Manager
@@ -35,8 +35,8 @@ La revision ocurre sobre el modelo local, sin dependencia de servicios externos.
 | ----- | ------------------ | ----------------------- |
 | 2023  | .NET Framework 4.8 | `ControlManager.Legacy` |
 | 2024  | .NET Framework 4.8 | `ControlManager.Legacy` |
-| 2025  | .NET Framework 4.8 | `ControlManager.Legacy` |
-| 2026  | .NET Framework 4.8 | `ControlManager.Legacy` |
+| 2025  | .NET 8             | `ControlManager.Net8`   |
+| 2026  | .NET 8             | `ControlManager.Net8`   |
 | 2027  | .NET 10            | `ControlManager.Net10`  |
 
 ## Instalacion
@@ -95,13 +95,14 @@ ControlManager.Installer.exe --install
 
 ### Opcion C - Autodesk App Store
 
-Disponible proximamente.
+Envio al [Publisher Center](https://aps.autodesk.com/marketplace/publisher-center/revit-publisher-guidelines) con el ZIP del bundle (`ControlManager_vX.Y.Z.zip`, carpeta `ControlManager.bundle` en la raiz). Autodesk genera el instalador de la Store a partir de ese paquete.
 
 ## Requisitos
 
 - Windows 10/11 (64-bit).
 - Autodesk Revit 2023, 2024, 2025, 2026 o 2027.
-- .NET Framework 4.8 para Revit 2023-2026.
+- .NET Framework 4.8 para Revit 2023-2024.
+- .NET 8 Runtime para Revit 2025-2026.
 - .NET 10 Runtime para Revit 2027.
 
 ## Stack tecnico
